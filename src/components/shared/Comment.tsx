@@ -38,7 +38,13 @@ function Comment({ review }: { review: Review | undefined }) {
           </Text>
           <Spacing size={10} />
 
-          <Text typography="t5">{review.text}</Text>
+          <Text typography="t5">
+            <span
+              dangerouslySetInnerHTML={{
+                __html: review.text.replace(/\n/g, '<br />'),
+              }}
+            />
+          </Text>
 
           <Spacing size={10} />
 
