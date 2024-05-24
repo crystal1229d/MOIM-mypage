@@ -5,7 +5,7 @@ export interface Party {
   title: string
   description: string
   datetime: string
-  createdAt: Date
+  createdAt: string
 
   reviews: Review[]
 }

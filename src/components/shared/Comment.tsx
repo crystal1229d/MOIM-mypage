@@ -22,7 +22,12 @@ function Comment({ review }: { review: Review | undefined }) {
     }
 
     return (
-      <Container justify="flex-start" gap="10px">
+      <Container
+        justify="flex-start"
+        align="flex-start"
+        gap="10px"
+        style={{ marginTop: '30px' }}
+      >
         <UserProfile>
           <FaUser size={25} color={colors.white} />
         </UserProfile>
@@ -37,11 +42,21 @@ function Comment({ review }: { review: Review | undefined }) {
 
           <Spacing size={10} />
 
-          {review.images.length > 0 && (
+          {review.images && review.images.length > 0 && (
             <>
-              {review.images.map((image) => (
-                <img src={image} alt="review" />
-              ))}
+              <Flex gap="10px">
+                {review.images.map(
+                  (image, index) =>
+                    image && (
+                      <img
+                        key={index}
+                        src={image}
+                        alt="review"
+                        style={{ width: '100px', height: '100px' }}
+                      />
+                    ),
+                )}
+              </Flex>
               <Spacing size={10} />
             </>
           )}

@@ -30,7 +30,7 @@ export async function getReviews({ partyId }: { partyId: string }) {
     return {
       id: doc.id,
       ...review,
-      createdAt: review.createdAt.toDate() as Date,
+      createdAt: review.createdAt,
     } as Review
   })
 

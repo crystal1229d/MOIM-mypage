@@ -9,10 +9,20 @@ interface ReviewFormProps {
   review: Review | undefined
   comment: string
   onChange: (e: ChangeEvent<HTMLTextAreaElement>) => void
+  filePreviews: string[]
+  handleFileChange: (
+    event: ChangeEvent<HTMLInputElement>,
+    index: number,
+  ) => void
 }
-function ReviewForm({ review, comment, onChange }: ReviewFormProps) {
-  const handleFileChange = () => {}
 
+function ReviewForm({
+  review,
+  comment,
+  onChange,
+  filePreviews,
+  handleFileChange,
+}: ReviewFormProps) {
   return (
     <Flex dir="column" align="flex-start">
       <Spacing size={36} />
@@ -22,9 +32,14 @@ function ReviewForm({ review, comment, onChange }: ReviewFormProps) {
       <Spacing size={20} />
 
       <Flex justify="flex-start" gap="20px">
-        <InputFile onChange={handleFileChange} />
-        <InputFile onChange={handleFileChange} />
-        <InputFile onChange={handleFileChange} />
+        {filePreviews.map((previewUrl, index) => (
+          <InputFile
+            key={index}
+            onChange={handleFileChange}
+            previewUrl={previewUrl}
+            index={index}
+          />
+        ))}
       </Flex>
     </Flex>
   )

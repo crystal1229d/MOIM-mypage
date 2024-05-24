@@ -1,30 +1,22 @@
 import { useQuery, useMutation, useQueryClient } from 'react-query'
-
 import { deleteReview, getReviews, writeReview } from '../remote/review'
 import { Review } from '../models/review'
 
 function useReview({ partyId }: { partyId: string }) {
   const client = useQueryClient()
 
-  const { data, isLoading } = useQuery(['reviews', partyId], () =>
+  const { data, isLoading } = useQuery(['review', partyId], () =>
     getReviews({ partyId }),
   )
 
   const { mutateAsync: write } = useMutation(
-    async (text: string) => {
-      const newReview = {
-        createdAt: new Date(),
-        partyId,
-        text,
-      } as Review
-
+    async (newReview: Omit<Review, 'id'>) => {
       await writeReview(newReview)
-
       return true
     },
     {
       onSuccess: () => {
-        client.invalidateQueries(['reviews', partyId])
+        client.invalidateQueries(['review', partyId])
       },
     },
   )
@@ -35,7 +27,7 @@ function useReview({ partyId }: { partyId: string }) {
     },
     {
       onSuccess: () => {
-        client.invalidateQueries(['reviews', partyId])
+        client.invalidateQueries(['review', partyId])
       },
     },
   )

@@ -1,4 +1,3 @@
-// useEditReview.ts
 import { useState, useEffect } from 'react'
 import { useQueryClient, useMutation, useQuery } from 'react-query'
 import { getReviews, writeReview } from '../remote/review'
@@ -7,7 +6,7 @@ import { Review } from '../models/review'
 function useEditReview({ partyId }: { partyId: string }) {
   const client = useQueryClient()
 
-  const { data: reviews, isLoading } = useQuery(['reviews', partyId], () =>
+  const { data: reviews, isLoading } = useQuery(['review', partyId], () =>
     getReviews({ partyId }),
   )
 
@@ -22,10 +21,11 @@ function useEditReview({ partyId }: { partyId: string }) {
   const { mutateAsync: write } = useMutation(
     async (text: string) => {
       const newReview = {
-        createdAt: new Date(),
+        createdAt: new Date().toISOString(),
         partyId,
         text,
-      } as Review
+        images: [],
+      } as Omit<Review, 'id'>
 
       await writeReview(newReview)
 
@@ -33,7 +33,7 @@ function useEditReview({ partyId }: { partyId: string }) {
     },
     {
       onSuccess: () => {
-        client.invalidateQueries(['reviews', partyId])
+        client.invalidateQueries(['review', partyId])
       },
     },
   )

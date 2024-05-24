@@ -10,6 +10,8 @@ import Flex from '../../shared/Flex'
 import ReviewForm from './ReviewForm'
 import Comment from '../../shared/Comment'
 import useReview from '../../../hooks/useReviews'
+import useFileUpload from '../../../hooks/useFileUpload'
+import { Review } from '../../../models/review'
 
 interface CardProps {
   party: Party
@@ -17,14 +19,21 @@ interface CardProps {
 
 function Card({ party }: CardProps) {
   const { id, title, description, datetime, reviews } = party
+
   const { write } = useReview({ partyId: id })
+  const { files, filePreviews, handleFileChange, uploadFiles } = useFileUpload()
 
   const [isEditMode, setEditMode] = useState(false)
   const [comment, setComment] = useState('')
 
   const review = reviews?.length > 0 ? reviews[0] : undefined
 
-  const handleChangeReview = async (e: ChangeEvent<HTMLTextAreaElement>) => {
+  const handleSwitchMode = () => {
+    setComment(review ? review.text : '')
+    setEditMode((prev) => !prev)
+  }
+
+  const handleChangeReview = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setComment(e.target.value)
   }
 
@@ -38,14 +47,25 @@ function Card({ party }: CardProps) {
       alert('500자 이상 입력해주세요')
       return
     }
+    const uploadedUrls = await uploadFiles() // FireStorage 에 저장된 이미지 경로 가져오기
 
-    const success = await write(comment)
+    console.log(
+      `후기 데이터 - 내용: ${comment}, 파일 개수: ${files.length}, 파일 원본 이름: [${files.map((file) => file?.name).join(', ')}]`,
+    )
+
+    const newReview = {
+      createdAt: new Date().toISOString(),
+      partyId: id,
+      text: comment,
+      images: uploadedUrls,
+    } as Omit<Review, 'id'>
+
+    const success = await write(newReview)
 
     if (success === true) {
       setComment('')
-      console.log('후기 데이터 - 내용 : {} 파일 개수 : {} 파일 원본 이름 : {}')
+      setEditMode(false)
     }
-    setEditMode((prev) => !prev)
   }
 
   return (
@@ -74,6 +94,8 @@ function Card({ party }: CardProps) {
             review={review}
             comment={comment}
             onChange={handleChangeReview}
+            filePreviews={filePreviews}
+            handleFileChange={handleFileChange}
           />
         ) : (
           <Comment review={review} />
@@ -83,11 +105,7 @@ function Card({ party }: CardProps) {
       <Actions>
         {isEditMode ? (
           <>
-            <Button
-              label="취소"
-              color="negative"
-              onClick={() => setEditMode((prev) => !prev)}
-            />
+            <Button label="취소" color="negative" onClick={handleSwitchMode} />
             <Button
               label="등록하기"
               color="positive"
@@ -99,12 +117,12 @@ function Card({ party }: CardProps) {
             <Button
               label="후기 보기"
               color="negative"
-              onClick={() => setEditMode((prev) => !prev)}
+              onClick={handleSwitchMode}
             />
             <Button
               label="후기 수정"
               color="positive"
-              onClick={() => setEditMode((prev) => !prev)}
+              onClick={handleSwitchMode}
             />
           </>
         )}
