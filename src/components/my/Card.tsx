@@ -1,13 +1,15 @@
 import { useState } from 'react'
 import styled from 'styled-components'
+
+import formatDatetime from '../../utils/formatDate'
+import { Party } from '../../models/party'
 import Text from '../shared/Text'
 import Button from '../shared/Button'
 import TextField from '../shared/TextField'
 import InputFile from '../shared/InputFile'
-import formatDatetime from '../../utils/formatDate'
-import { Party } from '../../models/party'
 import { colors } from '../styles/colorPalette'
 import Flex from '../shared/Flex'
+import Spacing from '../shared/Spacing'
 
 interface CardProps {
   party: Party
@@ -18,15 +20,17 @@ function Card({ party }: CardProps) {
 
   const { title, description, datetime } = party
 
-  const handleChange = () => {}
+  const handleFileChange = () => {}
 
   return (
     <Container>
       <Header>
-        <Text typography="t3" bold>
+        <Text typography="t3" color="white" bold>
           {title}
         </Text>
-        <Text typography="t4">{description}</Text>
+        <Text typography="t4" color="white">
+          {description}
+        </Text>
       </Header>
 
       <Content>
@@ -39,13 +43,25 @@ function Card({ party }: CardProps) {
           </Text>
         </Flex>
 
-        <TextField />
+        {isEditMode ? (
+          <Flex dir="column">
+            <TextField />
 
-        <Flex justify="flex-start" gap="20px">
-          <InputFile onChange={handleChange} />
-          <InputFile onChange={handleChange} />
-          <InputFile onChange={handleChange} />
-        </Flex>
+            <Spacing size={20} />
+
+            <Flex justify="flex-start" gap="20px">
+              <InputFile onChange={handleFileChange} />
+              <InputFile onChange={handleFileChange} />
+              <InputFile onChange={handleFileChange} />
+            </Flex>
+          </Flex>
+        ) : (
+          <Text typography="t5" style={{ width: '100%', marginTop: '20px' }}>
+            후기를 작성해주세요.
+            <br />
+            소정의 포인트가 지급됩니다.
+          </Text>
+        )}
       </Content>
 
       <Actions>
@@ -73,11 +89,15 @@ const Container = styled.li`
   background-color: ${colors.white};
   border-radius: 10px;
   box-shadow: 0px 4px 15px 0px ${colors.grayForShadow};
+
+  @media (max-width: 768px) {
+    width: 90vw;
+  }
 `
 
 const Header = styled.div`
   height: 40px;
-  padding: 11px 20px;
+  padding: 0 20px;
 
   display: flex;
   justify-content: space-between;
@@ -88,10 +108,13 @@ const Header = styled.div`
 `
 
 const Content = styled.div`
-  padding: 40px 22px 24px 22px;
+  padding: 40px 22px 21px 22px;
+  display: flex;
+  flex-direction: column;
 `
 
 const Actions = styled.div`
+  padding: 0 19px 35px 19px;
   display: flex;
   justify-content: flex-end;
   gap: 10px;

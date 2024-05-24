@@ -12,7 +12,7 @@ interface BaseButtonProps {
   size?: ButtonSize
   weak?: boolean
   disabled?: boolean
-  withShadow?: boolean
+  withshadow?: boolean
 }
 
 interface ButtonProps extends BaseButtonProps {
@@ -20,7 +20,7 @@ interface ButtonProps extends BaseButtonProps {
 }
 
 const BaseButton = styled.button.withConfig({
-  shouldForwardProp: (prop) => !['withShadow'].includes(prop),
+  shouldForwardProp: (prop) => !['withshadow'].includes(prop),
 })<BaseButtonProps>`
   cursor: pointer;
   font-weight: 400;
@@ -38,8 +38,8 @@ const BaseButton = styled.button.withConfig({
       opacity: 0.25;
       cursor: not-allowed;
     `};
-  ${({ withShadow }) =>
-    withShadow &&
+  ${({ withshadow }) =>
+    withshadow &&
     css`
       box-shadow: 0px 4px 15px 0px ${colors.grayForShadow};
     `};
