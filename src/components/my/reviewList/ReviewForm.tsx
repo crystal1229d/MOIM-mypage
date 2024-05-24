@@ -28,6 +28,7 @@ function ReviewForm({
 
       <Spacing size={20} />
 
+      {/* @TODO : 이미지 수정 기능  */}
       <Flex justify="flex-start" gap="20px">
         {filePreviews.map((previewUrl, index) => (
           <InputFile

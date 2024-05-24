@@ -8,6 +8,7 @@ import {
 } from '../remote/review'
 import { Review } from '../models/review'
 
+// @TODO: 코드 정리 필요
 function useReview({ partyId }: { partyId: string }) {
   const client = useQueryClient()
   const [comment, setComment] = useState('')

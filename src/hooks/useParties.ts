@@ -3,6 +3,7 @@ import { useInfiniteQuery } from 'react-query'
 
 import { getParties } from '../remote/party'
 
+// @TODO: 무한스크롤 에러
 function useParties() {
   const {
     data,

@@ -60,6 +60,7 @@ function Card({ party }: CardProps) {
     const uploadedUrls = await uploadFiles()
     setImages(uploadedUrls)
 
+    // 필수 작업 조건 : 후기 작성 기능
     console.log(
       `후기 데이터 - 내용: ${comment}, 파일 개수: ${files.length}, 파일 원본 이름: [${files.map((file) => file?.name).join(', ')}]`,
     )
@@ -98,6 +99,7 @@ function Card({ party }: CardProps) {
           </Text>
         </Flex>
 
+        {/* @TODO : 이미지 수정 기능  */}
         {isEditMode ? (
           <ReviewForm
             comment={comment}

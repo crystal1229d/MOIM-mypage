@@ -9,6 +9,7 @@ import Text from './Text'
 import { FaUser } from 'react-icons/fa'
 import { colors } from '../styles/colorPalette'
 
+// @TODO: 리뷰 삭제 기능
 function Comment({ review }: { review: Review | null }) {
   const renderedReview = useCallback(() => {
     if (!review) {
