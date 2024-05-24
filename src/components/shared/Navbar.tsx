@@ -1,13 +1,55 @@
 import { useState } from 'react'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
+
 import { NAVIGATION } from '../../constants'
 import Text from './Text'
+import {
+  barAnimationOpenTop,
+  barAnimationOpenBottom,
+  barAnimationCloseTop,
+  barAnimationCloseBottom,
+} from '../styles/animation'
+
+function Navbar() {
+  const [isSelected, setSelected] = useState(4)
+  const [isOpen, setIsOpen] = useState(false)
+
+  const toggleMenu = () => {
+    setIsOpen(!isOpen)
+  }
+
+  return (
+    <NavbarContainer>
+      {/* @반응형 : 화면 너비가 좁아졌을 경우 등장하는 햄버거 메뉴 */}
+      <Hamburger onClick={toggleMenu} isOpen={isOpen}>
+        <div />
+        <div />
+        <div />
+      </Hamburger>
+
+      <NavItems isOpen={isOpen}>
+        {NAVIGATION.map((nav, index) => (
+          <NavItem key={index} onClick={() => setSelected(index)}>
+            <Text typography="t5" bold={isSelected === index}>
+              {nav}
+            </Text>
+          </NavItem>
+        ))}
+      </NavItems>
+    </NavbarContainer>
+  )
+}
 
 const NavbarContainer = styled.nav`
   width: 100%;
+  margin-bottom: 60px;
+
+  position: relative;
 
   @media (max-width: 768px) {
-    flex-direction: column;
+    position: absolute;
+    top: 40px;
+    right: 5px;
   }
 `
 
@@ -15,16 +57,24 @@ const NavItems = styled.ul.withConfig({
   shouldForwardProp: (prop) => prop !== 'isOpen',
 })<{ isOpen: boolean }>`
   display: flex;
-
-  display: flex;
   justify-content: flex-start;
   align-items: center;
   gap: 8%;
 
   @media (max-width: 768px) {
-    flex-direction: column;
-    width: 100%;
+    width: 100vw;
+    margin-top: 40px;
+    padding: 20px 0;
+
     display: ${({ isOpen }) => (isOpen ? 'flex' : 'none')};
+    flex-direction: column;
+    gap: 30px;
+
+    backdrop-filter: blur(10px) saturate(188%);
+    -webkit-backdrop-filter: blur(10px) saturate(188%);
+    background-color: rgba(255, 255, 255, 0.55);
+    border-radius: 12px;
+    border: 1px solid rgba(209, 213, 219, 0.3);
   }
 `
 
@@ -39,46 +89,55 @@ const NavItem = styled.li`
   }
 `
 
-const Hamburger = styled.div`
+const Hamburger = styled.div<{ isOpen: boolean }>`
+  width: 30px;
+  height: 20px;
+
   display: none;
+  justify-content: space-between;
   flex-direction: column;
+  position: absolute;
+  top: 0px;
+  right: 10px;
+
   cursor: pointer;
 
   @media (max-width: 768px) {
     display: flex;
   }
-`
 
-const Bar = styled.div`
-  width: 25px;
-  height: 3px;
-  background-color: #333;
-  margin: 4px 0;
-`
-
-function Navbar() {
-  const [isOpen, setIsOpen] = useState(false)
-
-  const toggleMenu = () => {
-    setIsOpen(!isOpen)
+  & > div {
+    background-color: #000;
+    height: 3px;
+    width: 100%;
+    transition: all 0.3s ease;
   }
 
-  return (
-    <NavbarContainer>
-      <Hamburger onClick={toggleMenu}>
-        <Bar />
-        <Bar />
-        <Bar />
-      </Hamburger>
-      <NavItems isOpen={isOpen}>
-        {NAVIGATION.map((nav, index) => (
-          <NavItem key={index}>
-            <Text typography="t5">{nav}</Text>
-          </NavItem>
-        ))}
-      </NavItems>
-    </NavbarContainer>
-  )
-}
+  & > div:nth-child(1) {
+    animation: ${({ isOpen }) =>
+      isOpen
+        ? css`
+            ${barAnimationOpenTop} 0.3s forwards
+          `
+        : css`
+            ${barAnimationCloseTop} 0.3s forwards
+          `};
+  }
+
+  & > div:nth-child(2) {
+    opacity: ${({ isOpen }) => (isOpen ? 0 : 1)};
+  }
+
+  & > div:nth-child(3) {
+    animation: ${({ isOpen }) =>
+      isOpen
+        ? css`
+            ${barAnimationOpenBottom} 0.3s forwards
+          `
+        : css`
+            ${barAnimationCloseBottom} 0.3s forwards
+          `};
+  }
+`
 
 export default Navbar
