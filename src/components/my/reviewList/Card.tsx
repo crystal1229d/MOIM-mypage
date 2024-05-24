@@ -68,9 +68,9 @@ function Card({ party }: CardProps) {
     // 이미 존재하는 리뷰(id가 있음) : 생성
     // 존재하지 않는 리뷰(id가 없음)) : 수정
     if (updatedReview && updatedReview.id) {
-      await handleUpdateReview()
+      await handleUpdateReview({ uploadedUrls })
     } else {
-      await handleCreateReview()
+      await handleCreateReview({ uploadedUrls })
     }
 
     setComment('')

@@ -62,7 +62,11 @@ function useReview({ partyId }: { partyId: string }) {
     },
   )
 
-  const handleUpdateReview = async () => {
+  const handleUpdateReview = async ({
+    uploadedUrls,
+  }: {
+    uploadedUrls: string[]
+  }) => {
     if (comment.length < 30) {
       alert('30자 이상 입력해주세요')
       return
@@ -76,7 +80,7 @@ function useReview({ partyId }: { partyId: string }) {
     const updatedReviewData = {
       ...updatedReview,
       text: comment,
-      images,
+      images: uploadedUrls,
       createdAt: new Date().toISOString(),
     } as Review
 
@@ -88,7 +92,11 @@ function useReview({ partyId }: { partyId: string }) {
     }
   }
 
-  const handleCreateReview = async () => {
+  const handleCreateReview = async ({
+    uploadedUrls,
+  }: {
+    uploadedUrls: string[]
+  }) => {
     if (comment.length < 30) {
       alert('30자 이상 입력해주세요')
       return
@@ -103,7 +111,7 @@ function useReview({ partyId }: { partyId: string }) {
       createdAt: new Date().toISOString(),
       partyId,
       text: comment,
-      images,
+      images: uploadedUrls,
     })
 
     if (success) {
