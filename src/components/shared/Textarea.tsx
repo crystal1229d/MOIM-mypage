@@ -1,10 +1,10 @@
 import styled from 'styled-components'
 import { colors } from '../styles/colorPalette'
 
-const Input = styled.input`
-  width: 100%;
-  height: 48px;
-  padding: 0 16px;
+const Textarea = styled.textarea`
+  width: 540px;
+  height: 130px;
+  padding: 16px;
 
   font-size: 15px;
   font-weight: 500;
@@ -22,4 +22,4 @@ const Input = styled.input`
   }
 `
 
-export default Input
+export default Textarea

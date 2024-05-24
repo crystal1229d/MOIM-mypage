@@ -13,6 +13,7 @@ interface BaseButtonProps {
   weak?: boolean
   disabled?: boolean
   withshadow?: boolean
+  onClick?: () => void
 }
 
 interface ButtonProps extends BaseButtonProps {
@@ -45,10 +46,14 @@ const BaseButton = styled.button.withConfig({
     `};
 `
 
-const Button = ({ label, color, ...props }: ButtonProps) => (
-  <BaseButton color={color} {...props}>
-    <p {...props}>{label}</p>
-  </BaseButton>
-)
+const Button = ({ label, color, ...props }: ButtonProps) => {
+  const { withshadow, ...restProps } = props
+
+  return (
+    <BaseButton color={color} withshadow={withshadow} {...restProps}>
+      <p>{label}</p>
+    </BaseButton>
+  )
+}
 
 export default Button

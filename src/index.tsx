@@ -5,6 +5,15 @@ import { HelmetProvider, Helmet } from 'react-helmet-async'
 import App from './App'
 import reportWebVitals from './reportWebVitals'
 import GlobalStyle from './components/styles/globalStyles'
+import { QueryClient, QueryClientProvider } from 'react-query'
+
+const client = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 1,
+    },
+  },
+})
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 root.render(
@@ -17,7 +26,9 @@ root.render(
         />
       </Helmet>
       <GlobalStyle />
-      <App />
+      <QueryClientProvider client={client}>
+        <App />
+      </QueryClientProvider>
     </HelmetProvider>
   </React.StrictMode>,
 )
