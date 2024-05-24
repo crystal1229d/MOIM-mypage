@@ -1,12 +1,10 @@
 import { ChangeEvent } from 'react'
-import { Review } from '../../../models/review'
 import Flex from '../../shared/Flex'
 import InputFile from '../../shared/InputFile'
 import Spacing from '../../shared/Spacing'
 import TextField from '../../shared/TextField'
 
 interface ReviewFormProps {
-  review: Review | undefined
   comment: string
   onChange: (e: ChangeEvent<HTMLTextAreaElement>) => void
   filePreviews: string[]
@@ -17,7 +15,6 @@ interface ReviewFormProps {
 }
 
 function ReviewForm({
-  review,
   comment,
   onChange,
   filePreviews,
@@ -27,7 +24,7 @@ function ReviewForm({
     <Flex dir="column" align="flex-start">
       <Spacing size={36} />
 
-      <TextField text={review?.text || comment} onChange={onChange} />
+      <TextField text={comment} onChange={onChange} />
 
       <Spacing size={20} />
 

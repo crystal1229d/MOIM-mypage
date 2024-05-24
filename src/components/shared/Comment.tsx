@@ -9,7 +9,7 @@ import Text from './Text'
 import { FaUser } from 'react-icons/fa'
 import { colors } from '../styles/colorPalette'
 
-function Comment({ review }: { review: Review | undefined }) {
+function Comment({ review }: { review: Review | null }) {
   const renderedReview = useCallback(() => {
     if (!review) {
       return (
@@ -39,6 +39,7 @@ function Comment({ review }: { review: Review | undefined }) {
           <Spacing size={10} />
 
           <Text typography="t5">
+            {/* dangerouslySetInnerHTML : 엔터 포함하여 표출  */}
             <span
               dangerouslySetInnerHTML={{
                 __html: review.text.replace(/\n/g, '<br />'),
@@ -58,7 +59,7 @@ function Comment({ review }: { review: Review | undefined }) {
                         key={index}
                         src={image}
                         alt="review"
-                        style={{ width: '100px', height: '100px' }}
+                        style={{ width: 'fit-content', height: '100px' }}
                       />
                     ),
                 )}

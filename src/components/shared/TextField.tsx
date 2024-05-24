@@ -37,6 +37,7 @@ const TextField = forwardRef<HTMLTextAreaElement, TextFieldProps>(
         wrap="hard"
         onFocus={handleFocus}
         onBlur={handleBlur}
+        value={text}
         {...props}
       />
     )
@@ -44,7 +45,8 @@ const TextField = forwardRef<HTMLTextAreaElement, TextFieldProps>(
 )
 
 const Textarea = styled.textarea`
-  width: 540px;
+  max-width: 540px;
+  width: 100%;
   height: 130px;
   padding: 16px;
 

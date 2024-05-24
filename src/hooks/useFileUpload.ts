@@ -19,6 +19,12 @@ function useFileUpload() {
     const newFile = e.target.files ? e.target.files[0] : null
     if (!newFile) return
 
+    // 이미지파일만 업로드 가능 (JPEG, PNG, GIF, BMP 등 모두 포함)
+    if (!newFile.type.startsWith('image/')) {
+      alert('이미지 파일만 업로드 가능합니다.')
+      return
+    }
+
     const newFiles = [...files]
     const newPreviews = [...filePreviews]
 
@@ -31,6 +37,7 @@ function useFileUpload() {
 
   const uploadFiles = async () => {
     setUploading(true)
+
     const uploadPromises = files.map(async (file) => {
       if (file === null) return ''
       const storageRef = ref(storage, `reviews/${file.name}`)
@@ -41,7 +48,8 @@ function useFileUpload() {
     const urls = await Promise.all(uploadPromises)
     setUploadedUrls(urls.filter((url) => url !== ''))
     setUploading(false)
-    return urls
+
+    return urls // firestore 에 경로 저장을 위해 반환
   }
 
   return {

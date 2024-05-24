@@ -9,9 +9,8 @@ import Button from '../../shared/Button'
 import Flex from '../../shared/Flex'
 import ReviewForm from './ReviewForm'
 import Comment from '../../shared/Comment'
-import useReview from '../../../hooks/useReviews'
+import useReview from '../../../hooks/useReview'
 import useFileUpload from '../../../hooks/useFileUpload'
-import { Review } from '../../../models/review'
 
 interface CardProps {
   party: Party
@@ -20,16 +19,26 @@ interface CardProps {
 function Card({ party }: CardProps) {
   const { id, title, description, datetime, reviews } = party
 
-  const { write } = useReview({ partyId: id })
+  const {
+    comment,
+    setComment,
+    images,
+    setImages,
+    updatedReview,
+    handleCreateReview,
+    handleUpdateReview,
+  } = useReview({ partyId: id })
   const { files, filePreviews, handleFileChange, uploadFiles } = useFileUpload()
 
   const [isEditMode, setEditMode] = useState(false)
-  const [comment, setComment] = useState('')
 
   const review = reviews?.length > 0 ? reviews[0] : undefined
 
   const handleSwitchMode = () => {
-    setComment(review ? review.text : '')
+    if (review) {
+      setComment(review.text)
+      setImages(review.images || [])
+    }
     setEditMode((prev) => !prev)
   }
 
@@ -37,35 +46,35 @@ function Card({ party }: CardProps) {
     setComment(e.target.value)
   }
 
-  const handleCreateReview = async () => {
+  const handleSubmit = async () => {
     if (comment.length < 30) {
       alert('30자 이상 입력해주세요')
       return
     }
 
     if (comment.length > 500) {
-      alert('500자 이상 입력해주세요')
+      alert('500자 이하로 입력해주세요')
       return
     }
-    const uploadedUrls = await uploadFiles() // FireStorage 에 저장된 이미지 경로 가져오기
+
+    const uploadedUrls = await uploadFiles()
+    setImages(uploadedUrls)
 
     console.log(
       `후기 데이터 - 내용: ${comment}, 파일 개수: ${files.length}, 파일 원본 이름: [${files.map((file) => file?.name).join(', ')}]`,
     )
 
-    const newReview = {
-      createdAt: new Date().toISOString(),
-      partyId: id,
-      text: comment,
-      images: uploadedUrls,
-    } as Omit<Review, 'id'>
-
-    const success = await write(newReview)
-
-    if (success === true) {
-      setComment('')
-      setEditMode(false)
+    // 이미 존재하는 리뷰(id가 있음) : 생성
+    // 존재하지 않는 리뷰(id가 없음)) : 수정
+    if (updatedReview && updatedReview.id) {
+      await handleUpdateReview()
+    } else {
+      await handleCreateReview()
     }
+
+    setComment('')
+    setImages([])
+    setEditMode(false)
   }
 
   return (
@@ -91,14 +100,13 @@ function Card({ party }: CardProps) {
 
         {isEditMode ? (
           <ReviewForm
-            review={review}
             comment={comment}
             onChange={handleChangeReview}
-            filePreviews={filePreviews}
+            filePreviews={filePreviews.length > 0 ? filePreviews : images || []}
             handleFileChange={handleFileChange}
           />
         ) : (
-          <Comment review={review} />
+          <Comment review={updatedReview} />
         )}
       </Content>
 
@@ -106,11 +114,7 @@ function Card({ party }: CardProps) {
         {isEditMode ? (
           <>
             <Button label="취소" color="negative" onClick={handleSwitchMode} />
-            <Button
-              label="등록하기"
-              color="positive"
-              onClick={handleCreateReview}
-            />
+            <Button label="등록하기" color="positive" onClick={handleSubmit} />
           </>
         ) : (
           <>

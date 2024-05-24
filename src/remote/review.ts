@@ -53,9 +53,13 @@ export function updateReview(review: Review) {
   // 2. 가져온 리뷰 데이터를 1에서 조회한 Party 의 REVIEW Collection 하위 Document 조회
   // 3. 2에서 가져온 refiewRef의 Document 수정
   const partyRef = doc(store, 'PARTY', review.partyId)
-  const reviewRef = doc(collection(partyRef, 'REVIEW'))
+  const reviewRef = doc(partyRef, 'REVIEW', review.id)
 
-  return updateDoc(reviewRef, { title: review.text })
+  return updateDoc(reviewRef, {
+    text: review.text,
+    images: review.images,
+    createdAt: review.createdAt,
+  })
 }
 
 export function deleteReview({
